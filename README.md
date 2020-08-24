@@ -13,13 +13,14 @@ go build
 In a 64 character width terminal run:
 
 ```bash
-./chip8
+./chip8 -f [file]
 ```
 
 ## TODO
 
 - [ ] Implement full list of CHIP-8 opcodes
 - [ ] Allow dymanic screen sizes
-- [ ] Add command line flag for ROM file
+- [x] Add command line flag for ROM file
 - [ ] Add proper tests
 - [ ] Improve usage of Go language features
+- [ ] Don't read sprites from file

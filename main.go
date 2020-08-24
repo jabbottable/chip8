@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 	"time"
 
@@ -12,16 +13,24 @@ import (
 )
 
 func main() {
-	err := termbox.Init()
-	if err != nil {
-		panic(err)
-	}
-	defer termbox.Close()
 
-	termbox.SetInputMode(termbox.InputEsc | termbox.InputMouse)
+	fileName := flag.String("f", "", "file path of rom")
+	flag.Parse()
+
+	if *fileName == "" {
+		fmt.Println(
+			" CHIP-8 is tool for running CHIP-8 roms.\n\n",
+			"Usage:\n\n",
+			"\tchip8 -f [file]\n\n",
+			"Run in a 64 character per line terminal.",
+		)
+		return
+	}
+
 	mem, err := ioutil.ReadFile("./sprites.rom")
 	if err != nil {
-		fmt.Printf("can't read file: %v\n", err)
+		fmt.Printf("Can't read file: %v\n", err)
+		return
 	}
 
 	f, err := os.Create("instr.dump")
@@ -45,12 +54,21 @@ func main() {
 
 	mem = append(mem, make([]byte, 512-len(mem))...)
 
-	rom, err := ioutil.ReadFile("./pong.rom")
+	rom, err := ioutil.ReadFile(*fileName)
 	if err != nil {
-		fmt.Printf("can't read file: %v\n", err)
+		fmt.Printf("Can't read file: %v\n", err)
+		return
 	}
 
 	mem = append(mem, rom...)
+
+	err = termbox.Init()
+	if err != nil {
+		panic(err)
+	}
+	defer termbox.Close()
+
+	termbox.SetInputMode(termbox.InputEsc | termbox.InputMouse)
 
 	const spriteBytes = 5
 
