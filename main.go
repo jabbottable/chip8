@@ -12,6 +12,41 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
+// mem is the memory for CHIP-8.
+//
+// 0x000 to 0x1FF is reserved for the interpreter and
+// should not be modified by any program.
+// Program may refer to a group of sprites that represent
+// the hexadecimal digits 0 - F. These sprites are 5
+// bytes long, or 8x5 pixels. eg 0
+// +------+----------+------+
+// | "0"  | Binary   | Hex  |
+// +------+----------+------+
+// | **** | 11110000 | 0xF0 |
+// | *  * | 10010000 | 0x90 |
+// | *  * | 10010000 | 0x90 |
+// | *  * | 10010000 | 0x90 |
+// | **** | 11110000 | 0xF0 |
+// +------+----------+------+
+var mem []byte = []byte{
+	0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+	0x20, 0x60, 0x20, 0x20, 0x70, // 1
+	0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+	0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+	0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+	0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+	0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+	0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+	0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+	0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+	0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+	0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+	0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+	0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+	0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+	0xF0, 0x80, 0xF0, 0x80, 0x80, // F
+}
+
 func main() {
 
 	fileName := flag.String("f", "", "file path of rom")
@@ -27,11 +62,11 @@ func main() {
 		return
 	}
 
-	mem, err := ioutil.ReadFile("./sprites.rom")
-	if err != nil {
-		fmt.Printf("Can't read file: %v\n", err)
-		return
-	}
+	// mem, err := ioutil.ReadFile("./sprites.rom")
+	// if err != nil {
+	// 	fmt.Printf("Can't read file: %v\n", err)
+	// 	return
+	// }
 
 	f, err := os.Create("instr.dump")
 	if err != nil {
@@ -44,13 +79,6 @@ func main() {
 	}
 
 	defer f.Close()
-
-	// for i, m := range mem {
-	// 	if i%5 == 0 {
-	// 		fmt.Println()
-	// 	}
-	// 	fmt.Printf("%08b\n", m)
-	// }
 
 	mem = append(mem, make([]byte, 512-len(mem))...)
 

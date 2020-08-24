@@ -23,4 +23,4 @@ In a 64 character width terminal run:
 - [x] Add command line flag for ROM file
 - [ ] Add proper tests
 - [ ] Improve usage of Go language features
-- [ ] Don't read sprites from file
+- [x] Don't read sprites from file
